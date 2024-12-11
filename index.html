@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pusa Pet Store</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<style>body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+  text-align: center;
+}
+
+#product-menu {
+  margin-bottom: 20px;
+}
+
+#interaction {
+  margin-bottom: 20px;
+}
+
+#summary {
+  margin-top: 20px;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+</style>
+<body>
+  <div class="container">
+    <h1>Welcome to Pusa Pet Store :)</h1>
+    <div id="product-menu">
+      <h2>Products</h2>
+      <ul>
+        <li>1. Catfood - Php 105.00</li>
+        <li>2. Collar - Php 65.00</li>
+        <li>3. Cage - Php 350.00</li>
+        <li>4. Catnip - Php 50.00</li>
+        <li>5. Diaper - Php 100.00</li>
+        <li>6. Foodbowl - Php 75.00</li>
+        <li>7. Exit/Change of Mind</li>
+      </ul>
+    </div>
+    <div id="interaction">
+      <label for="product">Enter product number (1-6, or 7 to exit):</label>
+      <input type="number" id="product" min="1" max="7">
+      <label for="quantity">Enter quantity:</label>
+      <input type="number" id="quantity" min="1">
+      <button id="add-to-cart">Add to Cart</button>
+    </div>
+    <div id="summary">
+      <h2>Cart Summary</h2>
+      <div id="cart"></div>
+      <div id="total"></div>
+      <label for="bill">Enter cash:</label>
+      <input type="number" id="bill">
+      <button id="checkout">Checkout</button>
+    </div>
+    <div id="receipt"></div>
+  </div>
+</body>
+<script>const prices = [105, 65, 350, 50, 100, 75];
+let cart = [];
+let total = 0;
+
+document.getElementById('add-to-cart').addEventListener('click', () => {
+  const product = parseInt(document.getElementById('product').value);
+  const quantity = parseInt(document.getElementById('quantity').value);
+
+  if (product >= 1 && product <= 6 && quantity > 0) {
+    const price = prices[product - 1];
+    const subtotal = price * quantity;
+
+    cart.push({ product, quantity, subtotal });
+    total += subtotal;
+
+    updateCart();
+  } else if (product === 7) {
+    alert("Thank you, please come again!");
+  } else {
+    alert("Please enter valid product and quantity!");
+  }
+});
+
+document.getElementById('checkout').addEventListener('click', () => {
+  const bill = parseFloat(document.getElementById('bill').value);
+
+  if (bill >= total) {
+    const change = bill - total;
+    generateReceipt(bill, change);
+  } else {
+    alert(`You need Php ${(total - bill).toFixed(2)} more to complete the purchase.`);
+  }
+});
+
+function updateCart() {
+  const cartDiv = document.getElementById('cart');
+  const totalDiv = document.getElementById('total');
+  cartDiv.innerHTML = '';
+  totalDiv.innerHTML = `Total: Php ${total.toFixed(2)}`;
+
+  cart.forEach(item => {
+    const { product, quantity, subtotal } = item;
+    cartDiv.innerHTML += `<p>Product ${product} - Quantity: ${quantity} - Subtotal: Php ${subtotal.toFixed(2)}</p>`;
+  });
+}
+
+function generateReceipt(bill, change) {
+  const receiptDiv = document.getElementById('receipt');
+  receiptDiv.innerHTML = '<h2>Receipt</h2>';
+
+  cart.forEach(item => {
+    const { product, quantity, subtotal } = item;
+    receiptDiv.innerHTML += `<p>Product ${product} - Quantity: ${quantity} - Subtotal: Php ${subtotal.toFixed(2)}</p>`;
+  });
+
+  receiptDiv.innerHTML += `
+    <p>Total: Php ${total.toFixed(2)}</p>
+    <p>Cash Given: Php ${bill.toFixed(2)}</p>
+    <p>Change: Php ${change.toFixed(2)}</p>
+  `;
+}
+</script>
+</html>
